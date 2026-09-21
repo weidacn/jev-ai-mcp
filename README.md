@@ -11,7 +11,7 @@ Requires **Node.js 20+** and a **Jev AI API key**. Sign in at [jev-ai.pro/jev-ap
 Run directly from GitHub; no build step or npm publication is required:
 
 ```sh
-npx -y github:weidacn/jev-ai-mcp#v1.0.0
+npx -y github:weidacn/jev-ai-mcp#v1.0.1
 ```
 
 Supply the key through your MCP client's environment configuration. Never commit a real key to source control.
@@ -19,7 +19,7 @@ Supply the key through your MCP client's environment configuration. Never commit
 ### Claude Code
 
 ```sh
-claude mcp add jev-ai -e JEV_AI_API_KEY=YOUR_JEV_AI_KEY -- npx -y github:weidacn/jev-ai-mcp#v1.0.0
+claude mcp add jev-ai -e JEV_AI_API_KEY=YOUR_JEV_AI_KEY -- npx -y github:weidacn/jev-ai-mcp#v1.0.1
 ```
 
 ### Cursor / Claude Desktop / generic MCP configuration
@@ -29,7 +29,7 @@ claude mcp add jev-ai -e JEV_AI_API_KEY=YOUR_JEV_AI_KEY -- npx -y github:weidacn
   "mcpServers": {
     "jev-ai": {
       "command": "npx",
-      "args": ["-y", "github:weidacn/jev-ai-mcp#v1.0.0"],
+      "args": ["-y", "github:weidacn/jev-ai-mcp#v1.0.1"],
       "env": { "JEV_AI_API_KEY": "YOUR_JEV_AI_KEY" }
     }
   }

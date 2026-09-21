@@ -1,4 +1,7 @@
 import { test } from 'node:test';
+import { mkdtemp, symlink, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
 import assert from 'node:assert/strict';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
@@ -89,4 +92,15 @@ test('transport failures and malformed responses produce safe tool errors', asyn
     assert.equal(result.isError, true);
     assert.doesNotMatch(result.content[0].text, /secret-key/);
   }
+});
+
+ test('npm-style symlink entrypoint starts the MCP server', async t => {
+  const dir = await mkdtemp(join(tmpdir(), 'jev-mcp-bin-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const bin = join(dir, 'jev-ai-mcp');
+  await symlink(resolve('src/index.js'), bin);
+  const client = new Client({ name: 'symlink-test', version: '1' });
+  t.after(() => client.close());
+  await client.connect(new StdioClientTransport({ command: process.execPath, args: [bin], env: {} }));
+  assert.equal((await client.listTools()).tools.length, 6);
 });

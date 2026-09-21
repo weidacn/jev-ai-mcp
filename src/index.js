@@ -3,6 +3,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import { pathToFileURL } from 'node:url';
+import { realpathSync } from 'node:fs';
 
 const text = z.string().trim().min(1);
 const state = z.union([text, z.record(z.unknown()).refine(v => Object.keys(v).length > 0), z.array(z.unknown()).min(1)])
@@ -18,7 +19,7 @@ const questions = z.record(text, question).refine(v => Object.keys(v).length >= 
 const disclosure = ' Requires JEV_AI_API_KEY from https://jev-ai.pro/jev-api. Sends input to Jev AI and consumes account credits; rate limits apply. Returns model, answers and usage. No automatic retries.';
 
 export function createServer({ apiKey = process.env.JEV_AI_API_KEY, model = process.env.JEV_AI_MODEL || 'jev-latest', fetchImpl = fetch } = {}) {
-  const server = new McpServer({ name: 'jev-ai-mcp', version: '1.0.0' });
+  const server = new McpServer({ name: 'jev-ai-mcp', version: '1.0.1' });
   async function evaluate(payload) {
     if (!apiKey?.trim()) throw new Error('Set JEV_AI_API_KEY to a Jev AI API key from https://jev-ai.pro/jev-api. TypeSafe keys are not accepted.');
     const body = JSON.stringify({ model, ...payload });
@@ -80,6 +81,6 @@ export function createServer({ apiKey = process.env.JEV_AI_API_KEY, model = proc
   return server;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
   await createServer().connect(new StdioServerTransport());
 }
